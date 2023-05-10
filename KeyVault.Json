@@ -1,0 +1,42 @@
+{
+"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+"contentVersion": "1.0.0.0",
+"parameters": {
+        "KVName": {
+            "type": "string",
+            "minLength":4,
+            "maxLength":10
+        }
+
+
+},
+
+"resources":[
+    {
+        "type": "Microsoft.KeyVault/vaults",
+        "apiVersion": "2022-11-01",
+        "name":"[parameters('KVName')]",
+        "location": "Central India",
+        "properties": {
+            "sku": {
+                "name": "standard",
+                "family": "A"
+            },
+
+            "tenantId": "d705f586-e6e3-41fb-8f9f-0b9ec8b004bd",
+
+            "accessPolicies": [
+                {
+            "objectId": "d1c9a644-e8c6-4271-802d-ecc3ca06039f",
+            "tenantId": "d705f586-e6e3-41fb-8f9f-0b9ec8b004bd",
+            "permissions": {
+              "keys": ["list"],
+              "secrets": ["list"]
+                }
+            }
+        ]
+        }
+    }
+]
+
+}

@@ -1,0 +1,188 @@
+{               //Stat of Template
+
+"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+"contentVersion": "1.0.0",
+
+"parameters": {             //start of Parameters
+
+"adminusername": {
+    "type": "string"
+},
+
+"adminPassword": {
+
+    "type": "securestring",
+    "minLength":8
+},
+
+"PublicIPName": {
+    "type": "string"
+    
+},
+"publicAllocationMethod": {
+    "type": "string",
+    "allowedValues": [
+            "Dynamic",
+            "Static"
+        ]
+
+ },
+
+"publicIPSKU": {
+    "type": "string",
+    "allowedValues": [
+            "Basic",
+            "Standard"
+        ]
+    
+ },
+
+ "OSVersion": {
+      "type": "string"
+ 
+      },
+
+"vmSize": {
+      "type": "string"
+      },
+
+"location": {
+        "type": "string"
+
+      },
+
+"VM-Name": {
+        "type": "string"
+
+      }
+},  //END of Parameters
+
+"resources": [              //Start of Resoruces
+    {
+        "type": "Microsoft.Network/publicIPAddresses",
+        "apiVersion": "2022-09-01",
+        "name": "[parameters('PublicIPName')]",
+        "location":"[parameters('location')]",
+        "sku":{
+       "name": "[parameters('publicIPSKU')]"
+        },
+        "properties": {
+          "publicIPAllocationMethod":"[parameters('publicAllocationMethod')]"
+        }
+    },
+
+{
+    "type": "Microsoft.Network/virtualnetworks",
+    "apiVersion": "2022-09-01",
+    "name": "VNET1",
+    "location": "[resourceGroup().location]",
+    "properties": {
+        "addressSpace": {
+
+            "addressPrefixes": [ "10.0.0.0/16"]
+
+        },
+        "subnets": [
+            {
+                "name":"SNET1",
+                "properties": {
+                    "addressPrefix": "10.0.1.0/24"
+
+                }
+            }
+        ]
+
+
+    }
+},
+
+{
+    "type": "Microsoft.Network/networkInterfaces",
+    "apiVersion": "2022-09-01",
+    "name":"VM1-NIC",
+    "location":"[parameters('location')]",
+    "properties": {
+        "ipConfigurations": [
+
+         {
+            "name": "ipconfig1",
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',parameters('PublicIPName'))]"
+              },
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets','VNET1','SNET1')]"
+              }
+            }
+          }
+        ]
+    },
+    "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks','VNET1')]"
+      ]
+},
+
+{
+    "type": "Microsoft.Compute/virtualMachines",
+    "apiVersion": "2022-11-01",
+    "name": "[parameters('VM-Name')]",
+    "location":"[parameters('location')]",
+    "properties":{
+
+        "hardwareProfile": {
+            "vmSize":"[parameters('vmSize')]"
+        },
+
+    "osProfile": {
+        "computerName":"[parameters('VM-Name')]",
+        "adminUsername":"[parameters('adminusername')]",
+        "adminPassword":"[parameters('adminPassword')]"
+    },
+
+    "storageProfile": {
+          "imageReference": {
+            "publisher": "MicrosoftWindowsServer",
+            "offer": "WindowsServer",
+            "sku": "[parameters('OSVersion')]",
+            "version": "latest"
+          },
+           "osDisk": {
+            "createOption": "FromImage",
+            "managedDisk": {
+              "storageAccountType": "StandardSSD_LRS"
+            }
+          }
+    },
+   
+          "networkProfile": {
+          "networkInterfaces": [
+            {
+              "id": "[resourceId('Microsoft.Network/networkInterfaces','VM1-NIC')]"
+            }
+          ]
+          }
+          
+          
+
+
+},
+"dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', 'VM1-NIC')]"
+      
+      ]
+}
+
+
+
+]  //End Of Resources
+}
+/*/"outputs": {            //Start of Output
+    "hostname": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIpName')), '2022-05-01').dnsSettings.fqdn]"
+    }
+  }             //End of Output
+
+} */          //End of Template

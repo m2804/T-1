@@ -1,0 +1,42 @@
+{
+"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+"contentVersion": "1.0.0.0",
+"parameters": {
+    "StorageActName": {
+            "type": "string",
+            "minLength": 4,
+            "maxLength": 20
+    },
+
+    "StorageSKU": {
+
+        "type": "string",
+        "defaultValue": "Premium_LRS",
+              "allowedValues": [
+            "Standard_LRS",
+            "Premium_LRS"
+            
+        ]
+    }
+
+
+
+},
+
+"resources": [
+    {
+        
+        "type": "Microsoft.Storage/storageAccounts",
+        "apiVersion": "2022-09-01",
+        "name":"[parameters('StorageActName')]",    
+        
+        "location": "Central India",
+     "sku": {
+            "name": "[parameters('StorageSKU')]",
+            "tier": "Standard"
+            },
+        "kind": "StorageV2"
+    }
+]
+
+}

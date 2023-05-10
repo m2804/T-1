@@ -1,0 +1,71 @@
+{
+
+"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+"contentVersion": "1.0.0.1",
+"parameters": {
+
+"adminusername": {
+    "value": "vmadmin"
+},
+
+"adminPassword": {
+
+    "value": "S0luti0n@123"
+},
+
+"PublicIPName": {
+    "value": "VM1-PIP"
+},
+ "publicAllocationMethod": {
+    "value":"Dynamic"
+ },
+
+ "publicIPSKU": {
+    "value":"Basic"
+      
+ },
+
+ "OSVersion": {
+   
+      "Value": "2016-datacenter-server-core-g2"
+      
+      },
+
+"vmSize": {
+      "value": "Standard_DS1_v2"
+      },
+
+"location": {
+        "value": "centralindia"
+
+      },
+
+ "VM-Name": {
+        "value":"VM1"
+
+      }
+
+
+
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
